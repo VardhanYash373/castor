@@ -1,4 +1,4 @@
-# Chain-of-Trust
+# Castor
 
 **Cryptographic Image Provenance & Tamper Detection**
 
@@ -10,7 +10,7 @@ Built for CodeBlitz 2026.
 
 ## What It Does
 
-Chain-of-Trust cryptographically signs JPEG images and embeds an authenticity manifest directly into the file's metadata. Anyone can later verify:
+Castor cryptographically signs JPEG images and embeds an authenticity manifest directly into the file's metadata. Anyone can later verify:
 
 - **Origin** — who signed it and when
 - **Integrity** — whether a single pixel has changed since signing
@@ -36,7 +36,7 @@ Chain-of-Trust cryptographically signs JPEG images and embeds an authenticity ma
 ## Project Structure
 
 ```
-chain-of-trust/
+castor/
 ├── src/
 │   ├── crypto/         # Key gen, signing, verification
 │   ├── manifest/       # JSON manifest builder + XMP embedding
