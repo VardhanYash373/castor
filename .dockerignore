@@ -1,0 +1,26 @@
+# Never bake keys into the image
+keys/
+
+# Dev artifacts
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Tests not needed in production image
+tests/
+
+# Docs
+docs/
+*.md
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Signed sample outputs
+*_signed.jpg
+*_signed.jpeg
