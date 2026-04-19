@@ -1,0 +1,5 @@
+aws_region          = "us-east-1"
+instance_type       = "t2.micro"
+ssh_public_key_path = "~/.ssh/id_rsa.pub"
+repo_url            = "https://github.com/yourname/castor.git"
+flask_secret_key    = "change-me-to-something-random"
