@@ -4,12 +4,12 @@ services:
     ports:
       - "5000:5000"
     volumes:
+      # Persist keys across restarts — critical for signature consistency
       - ./keys:/app/keys
     environment:
       - FLASK_SECRET_KEY=${FLASK_SECRET_KEY:-change-me-in-production}
       - LEDGER_MODE=${LEDGER_MODE:-mock}
       - MOCK_LEDGER_URL=http://ledger:5001
-      - AWS_REGION=${AWS_REGION:-}
     depends_on:
       - ledger
     restart: unless-stopped
@@ -26,6 +26,4 @@ services:
       - "5001:5001"
     volumes:
       - ./keys:/app/keys
-    environment:
-      - AWS_REGION=${AWS_REGION:-}
     restart: unless-stopped

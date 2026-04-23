@@ -3,13 +3,7 @@ set -e
 
 # ── System setup ──────────────────────────────────────────────────────────────
 apt-get update -y
-apt-get install -y ca-certificates curl gnupg git unzip
-
-# Install AWS CLI v2
-curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "/tmp/awscliv2.zip"
-unzip /tmp/awscliv2.zip -d /tmp
-/tmp/aws/install
-rm -rf /tmp/awscliv2.zip /tmp/aws
+apt-get install -y ca-certificates curl gnupg git
 
 # Install Docker via official repo
 install -m 0755 -d /etc/apt/keyrings
@@ -31,7 +25,6 @@ systemctl start docker
 # ── Clone repo ────────────────────────────────────────────────────────────────
 cd /home/ubuntu
 git clone ${repo_url} castor
-chown -R ubuntu:ubuntu castor
 cd castor
 
 # ── Inject env ────────────────────────────────────────────────────────────────
@@ -39,7 +32,6 @@ cat > .env << ENVEOF
 FLASK_SECRET_KEY=${flask_secret}
 LEDGER_MODE=mock
 MOCK_LEDGER_URL=http://ledger:5001
-AWS_REGION=${aws_region}
 ENVEOF
 
 # ── Launch ────────────────────────────────────────────────────────────────────
