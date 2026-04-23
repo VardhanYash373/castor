@@ -2,7 +2,7 @@
 
 **Cryptographic Image Provenance & Tamper Detection**
 
-> *"In a world where seeing is no longer believing, Chain-of-Trust makes the camera's word cryptographically binding."*
+> *"In a world where seeing is no longer believing, Castor makes the camera's word cryptographically binding."*
 
 Built for CodeBlitz 2026.
 
