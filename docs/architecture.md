@@ -157,6 +157,48 @@ python -m src.pipeline verify samples/photo_signed.jpg keys/public.pem
 
 ---
 
+## Deployment Architecture
+
+```
+                        LOCAL / CI
+  ┌──────────────────────────────────────┐
+  │  docker build → docker push          │
+  │  → DockerHub (yourname/castor)       │
+  └──────────────────┬───────────────────┘
+                     │
+          ┌──────────┴──────────┐
+          │                     │
+          ▼                     ▼
+   ┌─────────────┐       ┌─────────────┐
+   │  Railway    │       │  AWS EC2    │
+   │  (PaaS)     │       │  t2.micro   │
+   │             │       │             │
+   │ docker pull │       │ docker pull │
+   │ auto HTTPS  │       │ port 5000   │
+   │ free tier   │       │ Terraform   │
+   └─────────────┘       └─────────────┘
+```
+
+### Option A — Railway (fastest)
+Push repo → Railway builds and deploys automatically. Free tier, auto HTTPS, no server management.
+
+### Option B — AWS EC2 via Terraform
+```bash
+cd infra/
+terraform init
+terraform apply    # spins up t2.micro, installs Docker, clones repo, launches app
+terraform destroy  # tears everything down when done
+```
+Terraform manages the full lifecycle — EC2 instance, security group, SSH key pair, and bootstrap script.
+
+### Option C — Local Docker
+```bash
+docker compose up --build
+# → http://localhost:5000
+```
+
+---
+
 ## Security Properties
 
 | Property | Mechanism |
@@ -166,6 +208,8 @@ python -m src.pipeline verify samples/photo_signed.jpg keys/public.pem
 | Forgery resistance | Private key required to produce a valid signature |
 | Tamper detection | Any pixel change produces a different hash → mismatch detected |
 | Immutable timestamp | Hash anchored to ledger on sign |
+
+**Never committed to git:** `keys/*.pem`, `.env`, `terraform.tfvars`, `*.tfstate`
 
 ---
 
@@ -186,6 +230,7 @@ Verify: JPEG → XMP extract → re-hash pixels → compare → verify signature
 | `Pillow` | JPEG pixel extraction |
 | `pyexiftool` | XMP metadata embed/read |
 | `Flask` | Web UI + mock ledger server |
+| `gunicorn` | Production WSGI server |
 | `requests` | Ledger client HTTP calls |
 | `python-dotenv` | Environment config |
 | `web3` | Polygon Amoy integration (optional) |
