@@ -1,0 +1,29 @@
+services:
+  castor:
+    build: .
+    ports:
+      - "5000:5000"
+    volumes:
+      # Persist keys across restarts — critical for signature consistency
+      - ./keys:/app/keys
+    environment:
+      - FLASK_SECRET_KEY=${FLASK_SECRET_KEY:-change-me-in-production}
+      - LEDGER_MODE=${LEDGER_MODE:-mock}
+      - MOCK_LEDGER_URL=http://ledger:5001
+    depends_on:
+      - ledger
+    restart: unless-stopped
+
+  ledger:
+    build: .
+    command: >
+      gunicorn
+      --bind 0.0.0.0:5001
+      --workers 1
+      --timeout 60
+      "src.ledger.mock_server:app"
+    ports:
+      - "5001:5001"
+    volumes:
+      - ./keys:/app/keys
+    restart: unless-stopped
