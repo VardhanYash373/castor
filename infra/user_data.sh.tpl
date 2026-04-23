@@ -3,7 +3,13 @@ set -e
 
 # ── System setup ──────────────────────────────────────────────────────────────
 apt-get update -y
-apt-get install -y ca-certificates curl gnupg git awscli
+apt-get install -y ca-certificates curl gnupg git unzip
+
+# Install AWS CLI v2
+curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "/tmp/awscliv2.zip"
+unzip /tmp/awscliv2.zip -d /tmp
+/tmp/aws/install
+rm -rf /tmp/awscliv2.zip /tmp/aws
 
 # Install Docker via official repo
 install -m 0755 -d /etc/apt/keyrings
