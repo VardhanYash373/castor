@@ -32,7 +32,7 @@ COPY src/ ./src/
 COPY .env.example .env
 
 # Keys are mounted at runtime — never baked into the image
-RUN mkdir -p keys
+RUN mkdir -p keys && touch .env
 
 # Gunicorn for production
 RUN pip install --no-cache-dir gunicorn
