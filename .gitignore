@@ -19,9 +19,17 @@ venv/
 .coverage
 htmlcov/
 
-# Signed output images (optional — remove if you want to commit samples)
+# Signed output images
 *_signed.jpg
 *_signed.jpeg
+
+# Terraform
+*.tfvars
+!*.tfvars.example
+.terraform/
+*.tfstate
+*.tfstate.backup
+.terraform.lock.hcl
 
 # OS
 .DS_Store
