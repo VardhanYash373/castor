@@ -31,7 +31,7 @@ Castor cryptographically signs JPEG images and embeds an authenticity manifest d
 ## Quick Start (Local)
 
 ```bash
-git clone https://github.com/yourname/castor.git
+git clone https://github.com/VardhanYash373/castor.git
 cd castor
 python -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
@@ -77,7 +77,7 @@ terraform apply
 terraform destroy
 ```
 
-Terraform spins up a `t2.micro` EC2 instance (AWS free tier), installs Docker, clones the repo, and launches the app automatically. `terraform destroy` kills everything cleanly.
+Terraform spins up a `t3.micro` EC2 instance (AWS free tier), installs Docker, clones the repo, and launches the app automatically. `terraform destroy` kills everything cleanly.
 
 ---
 
@@ -163,7 +163,7 @@ python -m pytest tests/ -v
 ## Tech Stack
 
 | Layer | Tools |
-|---|---|
+| - - - | - - - |
 | Language | Python 3.12 |
 | Cryptography | `cryptography` — ECDSA P-256 |
 | Image I/O | Pillow |
