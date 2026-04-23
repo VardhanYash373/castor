@@ -65,6 +65,7 @@ body{background:var(--bg);font-family:var(--font-body);overflow:hidden;height:10
 .split-top.open{transform:translateY(-100%)}
 .split-bottom.open{transform:translateY(100%)}
 
+/* Title sits exactly at the 50% midpoint so the split line bisects it */
 .title-wrap{
   position:absolute;
   bottom:50%;
@@ -79,6 +80,8 @@ body{background:var(--bg);font-family:var(--font-body);overflow:hidden;height:10
 .app-title{
   font-family:var(--font-title);font-size:clamp(64px,12vw,120px);
   color:var(--bg);letter-spacing:.06em;line-height:1;transition:color .3s;
+  /* push the title up by exactly half its own height so the
+     horizontal centre of the glyph aligns with the 50% split line */
   margin-bottom:0;
 }
 .title-wrap:hover .app-title{color:var(--orange)}
@@ -117,6 +120,10 @@ body{background:var(--bg);font-family:var(--font-body);overflow:hidden;height:10
 .hex-row{display:flex;gap:60px;align-items:center}
 .hex-btn{display:flex;flex-direction:column;align-items:center;gap:16px;cursor:pointer}
 
+/* Hexagons scaled to ~55% of a page-3 column width.
+   Page 3 body is split 50/50 minus a 1px gap, so one column ≈ 50vw.
+   55% of 50vw = 27.5vw. We clamp between a min of 140px and max of 260px
+   and keep the SVG native 120:138 aspect ratio → height = width * 1.15 */
 .hex-shape{
   width:clamp(140px,27.5vw,260px);
   height:calc(clamp(140px,27.5vw,260px) * 1.15);
@@ -221,7 +228,7 @@ body{background:var(--bg);font-family:var(--font-body);overflow:hidden;height:10
 #p3b .back-btn{color:rgba(255,255,255,.4);}
 #p3b .back-btn:hover{color:#fff;}
 
-/* drop zone (base) */
+/* drop zone (base — overridden per page above) */
 .drop-zone{
   flex:1;min-height:200px;border:1.5px dashed #ddd;border-radius:8px;
   display:flex;flex-direction:column;align-items:center;justify-content:center;
@@ -246,45 +253,6 @@ body{background:var(--bg);font-family:var(--font-body);overflow:hidden;height:10
 .action-btn:hover{background:var(--orange)}
 .action-btn:active{transform:scale(.98)}
 .action-btn:disabled{background:var(--lgrey);color:var(--mgrey);cursor:not-allowed}
-
-/* ── CAMERA BUTTON + ROW ── */
-.btn-row{display:flex;gap:8px;align-items:stretch}
-.btn-row .action-btn{flex:1}
-.cam-btn{
-  width:48px;height:48px;flex-shrink:0;border:none;border-radius:6px;
-  background:rgba(255,255,255,.1);cursor:pointer;display:flex;
-  align-items:center;justify-content:center;transition:background .2s,transform .1s;
-}
-.cam-btn:hover{background:var(--orange)}
-.cam-btn:active{transform:scale(.95)}
-.cam-btn svg{width:22px;height:22px;stroke:#fff;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
-
-/* ── CAMERA MODAL ── */
-#camModal{
-  position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:999;
-  display:none;flex-direction:column;align-items:center;justify-content:center;gap:20px;
-}
-#camModal.open{display:flex}
-#camVideo{
-  width:min(480px,90vw);aspect-ratio:1/1;object-fit:cover;
-  border-radius:10px;border:2px solid rgba(255,255,255,.15);background:#000;
-}
-.cam-modal-row{display:flex;gap:12px;align-items:center}
-.cam-snap-btn{
-  width:64px;height:64px;border-radius:50%;border:3px solid #fff;
-  background:var(--orange);cursor:pointer;transition:transform .15s,background .2s;
-  display:flex;align-items:center;justify-content:center;
-}
-.cam-snap-btn:hover{background:var(--orange-d);transform:scale(1.06)}
-.cam-snap-btn svg{width:26px;height:26px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-.cam-close-btn{
-  padding:10px 20px;border-radius:6px;border:1px solid rgba(255,255,255,.2);
-  background:transparent;color:rgba(255,255,255,.6);font-family:var(--font-body);
-  font-size:12px;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:border-color .2s,color .2s;
-}
-.cam-close-btn:hover{border-color:rgba(255,255,255,.5);color:#fff}
-.cam-hint{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.3)}
-#camCanvas{display:none}
 
 /* info panel */
 .info-panel{display:flex;flex-direction:column;gap:12px}
@@ -387,12 +355,7 @@ body{background:var(--bg);font-family:var(--font-body);overflow:hidden;height:10
       </div>
       <img class="img-preview" id="signPreview" alt="preview">
       <div class="processing" id="signProc"><div class="spinner"></div>Signing image...</div>
-      <div class="btn-row">
-        <button class="action-btn" id="signBtn" disabled onclick="doSign()">Sign &amp; Embed Manifest</button>
-        <button class="cam-btn" title="Capture from camera" onclick="openCamera()">
-          <svg viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
-        </button>
-      </div>
+      <button class="action-btn" id="signBtn" disabled onclick="doSign()">Sign &amp; Embed Manifest</button>
     </div>
     <div class="p3-col">
       <div class="col-label">Manifest Properties</div>
@@ -452,19 +415,6 @@ body{background:var(--bg);font-family:var(--font-body);overflow:hidden;height:10
   </div>
 </div>
 
-<!-- CAMERA MODAL -->
-<div id="camModal">
-  <div class="cam-hint">Position your shot — square crop</div>
-  <video id="camVideo" autoplay playsinline muted></video>
-  <canvas id="camCanvas"></canvas>
-  <div class="cam-modal-row">
-    <button class="cam-close-btn" onclick="closeCamera()">Cancel</button>
-    <button class="cam-snap-btn" title="Capture" onclick="snapPhoto()">
-      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4" fill="white" stroke="none"/></svg>
-    </button>
-  </div>
-</div>
-
 <script>
 const pages=['p1','p2','p3a','p3b'];
 function goTo(id){
@@ -476,6 +426,7 @@ function goTo(id){
   t.style.display='flex';
   requestAnimationFrame(()=>{t.style.opacity='1';t.classList.add('active');});
 }
+
 
 document.getElementById('titleBtn').addEventListener('click',function(e){
   const rip=document.createElement('div');
@@ -591,72 +542,6 @@ async function doVerify(){
   }
   btn.disabled=false;
 }
-
-/* ── CAMERA CAPTURE ── */
-let camStream = null;
-
-async function openCamera() {
-  const modal = document.getElementById('camModal');
-  const video = document.getElementById('camVideo');
-  modal.classList.add('open');
-  try {
-    camStream = await navigator.mediaDevices.getUserMedia({
-      video: { facingMode: 'environment', width: { ideal: 1280 }, height: { ideal: 1280 } },
-      audio: false
-    });
-    video.srcObject = camStream;
-  } catch (err) {
-    closeCamera();
-    const status = document.getElementById('signStatus');
-    status.className = 'status-badge error show';
-    status.innerHTML = '<div class="sb-dot"></div>Camera access denied or unavailable';
-  }
-}
-
-function closeCamera() {
-  const modal = document.getElementById('camModal');
-  const video = document.getElementById('camVideo');
-  modal.classList.remove('open');
-  if (camStream) {
-    camStream.getTracks().forEach(t => t.stop());
-    camStream = null;
-  }
-  video.srcObject = null;
-}
-
-function snapPhoto() {
-  const video = document.getElementById('camVideo');
-  const canvas = document.getElementById('camCanvas');
-  // Square crop from center
-  const side = Math.min(video.videoWidth, video.videoHeight);
-  const sx = (video.videoWidth - side) / 2;
-  const sy = (video.videoHeight - side) / 2;
-  canvas.width = side;
-  canvas.height = side;
-  const ctx = canvas.getContext('2d');
-  ctx.drawImage(video, sx, sy, side, side, 0, 0, side, side);
-  canvas.toBlob(blob => {
-    if (!blob) return;
-    const timestamp = Date.now();
-    const file = new File([blob], `capture_${timestamp}.jpg`, { type: 'image/jpeg' });
-    // Feed into the sign dropzone
-    const dt = new DataTransfer();
-    dt.items.add(file);
-    const inp = document.getElementById('signFile');
-    inp.files = dt.files;
-    document.getElementById('signFname').textContent = file.name;
-    document.getElementById('signBtn').disabled = false;
-    const preview = document.getElementById('signPreview');
-    preview.src = URL.createObjectURL(file);
-    preview.style.display = 'block';
-    closeCamera();
-  }, 'image/jpeg', 0.92);
-}
-
-// Close modal on backdrop click
-document.getElementById('camModal').addEventListener('click', function(e) {
-  if (e.target === this) closeCamera();
-});
 </script>
 </body>
 </html>"""
