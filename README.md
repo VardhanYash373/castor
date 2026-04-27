@@ -1,4 +1,4 @@
-# Castor
+# CASTOR
 
 **Cryptographic Image Provenance & Tamper Detection**
 
